@@ -1,4 +1,4 @@
-## Setup a DNS Serverf
+## Setup a DNS Server
 - using bind9 with docker ([link](https://github.com/sameersbn/docker-bind))
 
 ### Setup
@@ -88,3 +88,8 @@ Address:  192.168.99.100
 - It is also possible to bind multiple IPs to a single address. Take `blackjackyau.local` for an instance
 - Create another A record under `blackjackyau.local` master node with `192.168.88.99`
 - `nslookup` should return you two IPs ["192.168.88.88", "192.168.88.99"]
+
+### References
+- [docker-bind9 git repo](https://github.com/sameersbn/docker-bind)
+- [docker-bind9 resolved non host ip dns query](https://github.com/sameersbn/docker-bind/issues/3)
+- [the demo write up](http://www.damagehead.com/blog/2015/04/28/deploying-a-dns-server-using-docker/)
