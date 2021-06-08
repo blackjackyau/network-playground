@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  bind:
+    restart: always
+    image: sameersbn/bind:9.16.1-20200524
+    ports:
+    - "53:53/udp"
+    - "53:53/tcp"
+    - "10000:10000/tcp"
+    volumes:
+    - bind:/data
+    - ./named.conf.options:/etc/bind/named.conf.options
+
+volumes:
+  bind:
+    driver: local

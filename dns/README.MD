@@ -1,0 +1,90 @@
+## Setup a DNS Serverf
+- using bind9 with docker ([link](https://github.com/sameersbn/docker-bind))
+
+### Setup
+- By default bind9 only allow query from host ip, this setting is not ideal as on docker machine, the proxy endpoint might not be the host ip ( like boot2docker )
+- Need to edit the configuration to allow the DNS query
+- Login on Web Admin (:10000), navigate to `Servers` -> `BIND DNS Server`-> `Edit Config File` -> Edit cnofig file: `/etc/bind/named.conf.options` -> Add `allow-recursion { any; }; allow-query { any; }; allow-query-cache { any; };` under the `options` json block
+-> `Save` and click on `Apply configuration`(right top corner) button to take effect
+- test DNS server with `nslookup google.com ${dockerIP}` and should be successful
+
+### Create a DNS entry
+- Following the steps [here](http://www.damagehead.com/blog/2015/04/28/deploying-a-dns-server-using-docker/)
+- Navigate to `BIND DNS Server` -> `Create Master Zone` with `Forward` domain name = `blackjackyau.local` and `Master server` = `ns.blackjackyau.local`
+- Navigate to `BIND DNS Server` -> `Create Master Zone` with `Reverse` domain name = `${dockerIP}` and `Master server` = `ns.blackjackyau.local`
+- Go to `blackjackyau.local` master node, create an A record via `Address`. Leave `Name` to blank with `Address` of anything (E.g. 192.168.88.88)
+- Go to `blackjackyau.local` master node, create an A record via `Address`. Fill up `Name` with `ns` with Address of to blank with `Address` of anything (E.g. 192.168.88.88)
+- Go to `blackjackyau.local` master node, create an CNAME record via `Alias Record`. Fill up `Name` with `www` and `Address` of `.`
+- `Apply configuration` or `Apply zone` to take effect
+- Testing result
+```
+$ nslookup blackjackyau.local 192.168.99.100
+100.99.168.192.in-addr.arpa
+        primary name server = ns.blackjackyau.local
+        responsible mail addr = blackjackyau.local
+        serial  = 1623135371
+        refresh = 10800 (3 hours)
+        retry   = 3600 (1 hour)
+        expire  = 604800 (7 days)
+        default TTL = 38400 (10 hours 40 mins)
+Server:  UnKnown
+Address:  192.168.99.100
+
+Name:    blackjackyau.local
+Address:  192.168.88.88
+
+$ nslookup www.blackjackyau.local 192.168.99.100
+100.99.168.192.in-addr.arpa
+        primary name server = ns.blackjackyau.local
+        responsible mail addr = blackjackyau.local
+        serial  = 1623135371
+        refresh = 10800 (3 hours)
+        retry   = 3600 (1 hour)
+        expire  = 604800 (7 days)
+        default TTL = 38400 (10 hours 40 mins)
+Server:  UnKnown
+Address:  192.168.99.100
+
+Name:    www.blackjackyau.local
+
+$ nslookup ns.blackjackyau.local 192.168.99.100
+100.99.168.192.in-addr.arpa
+        primary name server = ns.blackjackyau.local
+        responsible mail addr = blackjackyau.local
+        serial  = 1623135371
+        refresh = 10800 (3 hours)
+        retry   = 3600 (1 hour)
+        expire  = 604800 (7 days)
+        default TTL = 38400 (10 hours 40 mins)
+Server:  UnKnown
+Address:  192.168.99.100
+
+Name:    ns.blackjackyau.local
+Address:  192.168.99.100
+
+$ nslookup 192.168.99.100 192.168.99.100
+100.99.168.192.in-addr.arpa
+        primary name server = ns.blackjackyau.local
+        responsible mail addr = blackjackyau.local
+        serial  = 1623135371
+        refresh = 10800 (3 hours)
+        retry   = 3600 (1 hour)
+        expire  = 604800 (7 days)
+        default TTL = 38400 (10 hours 40 mins)
+Server:  UnKnown
+Address:  192.168.99.100
+
+100.99.168.192.in-addr.arpa
+        primary name server = ns.blackjackyau.local
+        responsible mail addr = blackjackyau.local
+        serial  = 1623135371
+        refresh = 10800 (3 hours)
+        retry   = 3600 (1 hour)
+        expire  = 604800 (7 days)
+        default TTL = 38400 (10 hours 40 mins)
+*** No internal type for both IPv4 and IPv6 Addresses (A+AAAA) records available for 192.168.99.100
+
+```
+- It is also possible to bind multiple IPs to a single address. Take `blackjackyau.local` for an instance
+- Create another A record under `blackjackyau.local` master node with `192.168.88.99`
+- `nslookup` should return you two IPs ["192.168.88.88", "192.168.88.99"]
