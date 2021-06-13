@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  haproxy:
+    image: haproxytech/haproxy-alpine
+    ports:
+    - "80:80"
+    volumes:
+    - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    networks:
+    - blax-network
+
+networks:
+  blax-network:
+    external: true
