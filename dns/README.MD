@@ -85,9 +85,45 @@ Address:  192.168.99.100
 *** No internal type for both IPv4 and IPv6 Addresses (A+AAAA) records available for 192.168.99.100
 
 ```
+
+#### A record with Multiple IPs
 - It is also possible to bind multiple IPs to a single address. Take `blackjackyau.local` for an instance
 - Create another A record under `blackjackyau.local` master node with `192.168.88.99`
 - `nslookup` should return you two IPs ["192.168.88.88", "192.168.88.99"]
+
+#### Service Record (SRV)
+- `SRV` record allow you to publish you service IP together with PORT on DNS server
+- `SRV` record is similar like CNAME that requires a reference to A record
+- Create an A record of `srv.blackjackyau.local` that maps to `10.0.2.2`
+- Go to `blackjackyau.local` master node, create an SRV record via `Service Address Records`. Fill up `Name` with ``, `Service Name` with `app`, `Weight and Priority` to `1`, `Port` with `8888` and `Server` of `.`
+- create another SRV record. Fill up `Name` with ``, `Service Name` with `app`, `Weight and Priority` to `1`, `Port` with `9999` and `Server` of `.`
+- `Apply configuration` or `Apply zone` to take effect
+
+```
+$ nslookup -type=SRV _app._tcp.blackjackyau.local. 192.168.99.100
+100.99.168.192.in-addr.arpa
+        primary name server = ns.blackjackyau.local
+        responsible mail addr = blackjackyau.local
+        serial  = 1623135371
+        refresh = 10800 (3 hours)
+        retry   = 3600 (1 hour)
+        expire  = 604800 (7 days)
+        default TTL = 38400 (10 hours 40 mins)
+Server:  UnKnown
+Address:  192.168.99.100
+
+_app._tcp.blackjackyau.local    SRV service location:
+          priority       = 1
+          weight         = 1
+          port           = 8888
+          svr hostname   = srv.blackjackyau.local
+_app._tcp.blackjackyau.local    SRV service location:
+          priority       = 1
+          weight         = 1
+          port           = 9999
+          svr hostname   = srv.blackjackyau.local
+srv.blackjackyau.local  internet address = 10.0.2.2
+```
 
 ### References
 - [docker-bind9 git repo](https://github.com/sameersbn/docker-bind)

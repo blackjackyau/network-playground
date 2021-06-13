@@ -15,7 +15,10 @@
 - depends on `bind9 server` from `dns` folder
 - to create a shared bridge network between the two compose `docker network create blax-network`
 - `docker-compose up` on both `dns` and `ha-proxy`
-- refers to [README.MD](../dns/README.MD) for single A records with multiple ips setup
+- refers to [README.MD](../dns/README.MD) for `A record with Multiple IPs` and `SRV Records`
+- Unfortunately, service-template will not generate new entry when the `SRV Record` are having the same IPs but diffrerent port
+- Example in this demo, HA Proxy will only resolve to either `8888` or `9999` as both of them come from `10.0.2.2`
+- `SRV Records Service Discovery` will only come in handly for multiple upstreams with different IP and different ports, else A record is more suitable (less steps)
 
 ### References
 - [HA Proxy DNS service record](https://www.haproxy.com/documentation/aloha/9-5/traffic-management/lb-layer7/dns-srv-records/)
