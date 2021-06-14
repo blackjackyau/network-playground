@@ -4,12 +4,12 @@
     - Nginx Server requires Nginx Plus to support proper sticky session (not considering hashed ip)
     - Nginx Server does not support `resolver` that return a list of IPs for upstream
 
-![alt DNS Service Discovery](ha-proxy-dns-service-discovery.png)
+![alt DNS Service Discovery](haproxy-dns-service-discovery.png)
 
 ### DNS Service Discovery on Kubernates
 - Using Headless Service as the DNS source
 
-![alt DNS Service Discovery on Kubernates](ha-on-kube.png)
+![alt DNS Service Discovery on Kubernates](haproxy-on-kubernates.png)
 
 ### The Demo Setup
 - depends on `bind9 server` from `dns` folder
@@ -23,4 +23,4 @@
 ### References
 - [HA Proxy DNS service record](https://www.haproxy.com/documentation/aloha/9-5/traffic-management/lb-layer7/dns-srv-records/)
 - [HA Proxy Dynamic Sticky session cookie](https://www.haproxy.com/blog/whats-new-haproxy-1-8/#dynamic-cookies)
-- [Write up of HA Proxy on Kube](https://www.securityandit.com/network/haproxy-for-service-discovery-in-kubernetes/)
+- [Write up of HA Proxy on Kube Headless Service](https://www.securityandit.com/network/haproxy-for-service-discovery-in-kubernetes/)
