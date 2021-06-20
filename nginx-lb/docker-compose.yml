@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  nginx:
+    image: tekn0ir/nginx-stream
+    ports:
+      - "8888:88"
+      - "8889:89"
+    volumes:
+      - ./http-confd:/opt/nginx/http.conf.d
+      - ./stream-confd:/opt/nginx/stream.conf.d
+    networks:
+      - blax-network
+
+networks:
+  blax-network:
+    external: true
