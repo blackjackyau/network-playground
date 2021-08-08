@@ -45,8 +45,8 @@ $ curl http://docker.vm:8889/api/user?timeout=1 http://docker.vm:8889/api/user?t
 
 ### Http Pipelining
 - Http Pipelining is a feature on top of persistent connection that allows concurrent http requests to be sent over.
-- Http Pipelining will gurantee the order of a request (FIFO)
-  - A -> B -> C = A -> B -> C, eventhough B finished processing
+- Http Pipelining will gurantee the order of a response based on the request order (FIFO)
+  - `REQ: A -> B -> C = RESP: A -> B -> C`, eventhough B finished processing
 - Http pipelining can be in two forms
 
 #### Combined Requests
